@@ -1,1 +1,0 @@
-web: gunicorn Farm_Management_System.wsgi

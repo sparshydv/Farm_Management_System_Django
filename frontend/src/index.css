@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply bg-brand-light text-brand-black;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-brand-light;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-brand-teal/40 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-brand-teal/70;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-brand-teal text-white px-5 py-2.5 rounded-lg font-medium
+      hover:bg-brand-teal-dark transition-colors duration-200
+      focus:outline-none focus:ring-2 focus:ring-brand-teal/50;
+  }
+
+  .btn-secondary {
+    @apply bg-brand-dark text-white px-5 py-2.5 rounded-lg font-medium
+      hover:bg-brand-black transition-colors duration-200
+      focus:outline-none focus:ring-2 focus:ring-brand-dark/50;
+  }
+
+  .btn-danger {
+    @apply bg-red-600 text-white px-5 py-2.5 rounded-lg font-medium
+      hover:bg-red-700 transition-colors duration-200
+      focus:outline-none focus:ring-2 focus:ring-red-500/50;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-brand-dark px-5 py-2.5 rounded-lg font-medium
+      hover:bg-brand-dark/10 transition-colors duration-200;
+  }
+
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-gray-100 p-6;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-2.5 rounded-lg border border-gray-200
+      bg-white text-brand-black placeholder-gray-400
+      focus:outline-none focus:ring-2 focus:ring-brand-teal/40 focus:border-brand-teal
+      transition-all duration-200;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-brand-dark mb-1.5;
+  }
+
+  .stat-card {
+    @apply card flex flex-col gap-2;
+  }
+
+  .table-container {
+    @apply overflow-x-auto rounded-xl border border-gray-100;
+  }
+
+  .data-table {
+    @apply w-full text-sm text-left;
+  }
+
+  .data-table thead {
+    @apply bg-brand-dark text-white;
+  }
+
+  .data-table th {
+    @apply px-4 py-3 font-medium text-xs uppercase tracking-wider;
+  }
+
+  .data-table td {
+    @apply px-4 py-3.5 border-b border-gray-50;
+  }
+
+  .data-table tbody tr {
+    @apply bg-white hover:bg-brand-teal/5 transition-colors duration-150;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  .badge-success {
+    @apply badge bg-emerald-100 text-emerald-700;
+  }
+  .badge-warning {
+    @apply badge bg-amber-100 text-amber-700;
+  }
+  .badge-info {
+    @apply badge bg-brand-teal/15 text-brand-teal-dark;
+  }
+}

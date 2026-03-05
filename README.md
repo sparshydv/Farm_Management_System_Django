@@ -1,246 +1,324 @@
-# Farm Management System
+# FarmFlow — Farm Management System
 
-A Django-based Farm Management System to streamline farm operations and data management keeping track of farm operations.
-Agriculture is the backbone of every growing economy.
-Not just the economy, but  i can just name it as a breath!!
-Yeah!! you cant live without breathing!!
+Modern farm management platform with a Django backend and a React + TypeScript frontend.
 
-sure you cant live without agriculture!!
+## Overview
 
-## Table of Contents
+This project helps farmers manage end-to-end operations from a single system:
 
-- [Introduction](#introduction)
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Configuration](#configuration)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
+- Employees
+- Crops (with expenses, sales, and operations)
+- Livestock (with production logs)
+- Machinery (with activities and maintenance)
+- Milk production
+- Egg production
 
-# Introduction
+The backend provides REST APIs (Django REST Framework), and the frontend is a Vite-based React app.
 
-Welcome to the Farm Management System. This farm management system aims to keep track of the most operations in a farm. Keeping records of your daily operations is an important factor for a successful and profitable farming. The system is designed to make your work easier by providing a centralized platform where you can keep your farm records organized and accessible.
+## Tech Stack
 
-**Developed by: Sparsh Yadav**
+### Backend
 
-# Features
+- Django 5.0
+- Django REST Framework
+- SQLite (default)
+- django-cors-headers
+- WhiteNoise (static file serving)
 
-## Crop Management 🌾
-The heart of the Farm Management System lies in its robust Crop Management section. Seamlessly monitor all operations related to your crops with a user-friendly interface. This includes tracking the planting day, the associated field, and adding essential details such as crop operations, variety, crop name, sales, and expenses, each meticulously timestamped for a comprehensive overview.
+### Frontend
 
-#### Crop Operations
-Record every facet of your crop operations, including:
+- React 18
+- TypeScript
+- Vite
+- Tailwind CSS
+- React Router
+- Recharts
+- Lucide React
 
-- **Operation Date:** Capture the date of each operation.
-- **Operation Name:** Specify the type of operation, such as planting, harvesting, or irrigation.
-- **Additional Notes:** Add any relevant notes or details for future reference.
+## Architecture
 
-#### Expenses Details
-Efficiently manage your crop-related expenses with detailed records:
+- Django app serves APIs under:
+  - `/api/auth/*`
+  - `/api/*`
+- React frontend runs separately (dev server on `5173`) and calls backend through Vite proxy.
+- Session-based authentication is used for login/logout/me.
 
-- **Expense Date:** Document the date of each expense.
-- **Expense Type:** Categorize expenses based on their types.
-- **Expense Description:** Provide a brief description of the expense.
-- **Budget Amount:** Set a budget amount for better financial planning.
-- **Expense Amount:** Record the actual expense amount.
-- **Supplier Name:** Identify the supplier associated with the expense.
-- **Payment Method:** Specify the payment method used.
-- **Receipt Number:** Log the receipt number for easy reference.
+## Project Structure
 
-#### Sales Details
-Keep track of your crop sales with precision:
+```text
+Farm_Management_System_Django/
+├── backend/                     # Django API server
+│   ├── manage.py
+│   ├── requirements.txt
+│   ├── procfile
+│   ├── .env.example
+│   ├── FarmManagementSystem/    # Django project settings/urls
+│   ├── authentication/          # Auth API app
+│   ├── homepage/                # Core farm domain app + APIs
+│   └── static/
+├── frontend/                    # React + TypeScript + Vite app
+│   ├── src/
+│   ├── package.json
+│   ├── .env.example
+│   └── vercel.json
+├── .gitignore
+└── README.md
+```
 
-- **Sales Date:** Record the date of each sale.
-- **Quantity Sold:** Specify the quantity of crops sold.
-- **Unit Price:** Set the unit price for accurate pricing.
-- **Total Price:** Automatically calculated based on quantity and unit price.
-- **Buyers Information:** Document details about the buyers.
-- **Payment Method:** Specify the payment method used by the buyer.
-- **Payment Status:** Track the payment status (paid, pending, etc.).
-- **Invoice Number:** Assign a unique invoice number to each sale.
-- **Additional Information:** Include any supplementary information related to the sale.
+## Implemented Features
 
-Effortlessly manage and organize your farming activities, ensuring you have a detailed record of every step in your crop cultivation journey. Stay on top of your agricultural operations with the Crop Management feature, designed to enhance your farming experience.
+### Public + Auth
 
+- Landing page (`/`)
+- Register
+- Login
+- Google OAuth login
+- Logout
+- Current user (`/api/auth/me/`)
 
+### Dashboard & Modules
 
-## Employees 🌾👩‍🌾👨‍🌾
-The Employees section acts as your farm's personnel hub, maintaining comprehensive records of the hardworking individuals contributing to your agricultural success. Keep track of essential employee details, including:
+- Dashboard overview
+- Employees CRUD
+- Crops CRUD
+  - Crop expenses CRUD
+  - Crop sales CRUD
+  - Crop operations CRUD
+- Livestock CRUD
+  - Livestock production CRUD
+- Machinery CRUD
+  - Machinery activities CRUD
+  - Machinery maintenance CRUD
+- Milk production CRUD + monthly summary endpoint
+- Egg production CRUD + monthly summary endpoint
 
-- **Names:** Easily identify and manage your team members.
-- **Phone Numbers:** Maintain direct communication channels with each employee.
-- **Position:** Clearly define the roles and responsibilities of each team member.
-- **Salary:** Track financial aspects with a record of salaries for transparent payroll management.
-- **Performance:** Assess and document employee performance to recognize and encourage growth.
+## API Endpoints
 
-With the Employees feature, empower your farm's workforce management, ensuring a harmonious and efficient collaboration between your team members.
+### Authentication
 
+- `GET /api/auth/csrf/`
+- `POST /api/auth/register/`
+- `POST /api/auth/login/`
+- `POST /api/auth/google/`
+- `POST /api/auth/logout/`
+- `GET /api/auth/me/`
 
-## Livestock 🐄🐖🐑
-Manage your livestock efficiently with the Livestock section, equipped with features tailored to meet the diverse needs of your farm's animals. Track crucial information about each animal, including:
+### Core Resources
 
-- **Age:** Keep tabs on the age of your livestock for strategic planning.
-- **Breed:** Document the specific breeds, aiding in targeted breeding programs.
-- **Production Details:** Monitor the overall production-related metrics for each animal.
-- **Animal Type:** Categorize animals based on their types for easy identification.
+- `GET/POST /api/employees/`
+- `GET/PUT/PATCH/DELETE /api/employees/{id}/`
 
-The Production Features allow you to record key data points aligned with production activities:
+- `GET/POST /api/crops/`
+- `GET/PUT/PATCH/DELETE /api/crops/{id}/`
+- `GET/POST /api/crops/{Cid}/expenses/`
+- `GET/PUT/PATCH/DELETE /api/crops/{Cid}/expenses/{id}/`
+- `GET/POST /api/crops/{Cid}/sales/`
+- `GET/PUT/PATCH/DELETE /api/crops/{Cid}/sales/{id}/`
+- `GET/POST /api/crops/{Cid}/operations/`
+- `GET/PUT/PATCH/DELETE /api/crops/{Cid}/operations/{id}/`
 
-- **Production Date:** Capture the date of each production cycle.
-- **Feed Consumed:** Track the feed consumption patterns, ensuring a well-balanced diet.
-- **Production Amount:** Document the quantity or output of each production cycle.
-- **Comments:** Add additional insights or observations related to the production.
+- `GET/POST /api/livestock/`
+- `GET/PUT/PATCH/DELETE /api/livestock/{id}/`
+- `GET/POST /api/livestock/{Tag_number}/production/`
+- `GET/PUT/PATCH/DELETE /api/livestock/{Tag_number}/production/{id}/`
 
-Designed with an intuitive interface, the Livestock feature provides a seamless way to manage and optimize your livestock, fostering a healthy and productive environment on your farm.
+- `GET/POST /api/machinery/`
+- `GET/PUT/PATCH/DELETE /api/machinery/{Number_plate}/`
+- `GET/POST /api/machinery/{Number_plate}/activities/`
+- `GET/PUT/PATCH/DELETE /api/machinery/{Number_plate}/activities/{id}/`
+- `GET/POST /api/machinery/{Number_plate}/maintenance/`
+- `GET/PUT/PATCH/DELETE /api/machinery/{Number_plate}/maintenance/{id}/`
 
+- `GET/POST /api/milk-production/`
+- `GET/PUT/PATCH/DELETE /api/milk-production/{id}/`
+- `GET /api/milk-production/summary/`
 
-## Machinery 🚜🛠️
-Efficiently manage your farm's machinery with the Machinery section, designed to keep detailed records of essential equipment. Each piece of machinery is meticulously documented with the following information:
+- `GET/POST /api/egg-production/`
+- `GET/PUT/PATCH/DELETE /api/egg-production/{id}/`
+- `GET /api/egg-production/summary/`
 
-- **Equipment Name:** Easily identify and categorize your farm machinery.
-- **Purchase Price:** Record the cost associated with acquiring each piece of equipment.
-- **Purchase Date:** Capture the date when the machinery was purchased.
-- **Operations:** Track the usage and operational history of each piece, ensuring optimal efficiency.
-- **Maintenance Activities:** Document essential maintenance activities, safeguarding the longevity and performance of your machinery.
+## Local Development Setup
 
-With the Machinery feature, stay in control of your farming infrastructure, optimize equipment utilization, and ensure that your machinery operates at peak efficiency throughout its lifecycle.
-
-
-
-
-## Egg production and Milk production 🐔🐓🐄
-Your production!!
-
-The main aim of rearing animals is the production.
-
-Using this system you as a farmer things have been simplified for you.
-You can keep track of your milk and egg production records. Some of the fields that are contained in the records are:
-
-- **Production Year, month and Day:**   You need to keep the record of the production aligning with the respective dates for easier analysing. This section also contains a graphical interface for visualisation, You can seethe comparison between feeds consumed and the day, production vs day in the milk production section.
-
-- **Number of livestock involved:** You will record the number of animals involved in the production for a better analysingtallation
-
-
-# Installation
-
-Follow these steps to set up the Farm Management System on your local machine:
-
-## 1) Clone the Repository:
+### 1) Clone and enter the project
 
 ```bash
 git clone https://github.com/sparshydv/Farm_Management_System_Django.git
-```
-
-## 2) Navigate to the Project Directory:
-
-```bash
 cd Farm_Management_System_Django
 ```
 
-## 3) Create Virtual Environment:
+### 2) Backend setup
+
+Create and activate virtual environment:
+
+### Windows (PowerShell)
 
 ```bash
-
-python -m venv venv
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
 ```
 
-## 4) Activate Virtual Environment:
-
-   For Windows:
+### macOS/Linux
 
 ```bash
-
-venv\Scripts\activate
+python3 -m venv .venv
+source .venv/bin/activate
 ```
 
-For MacOS/Linux:
+Move into backend, install dependencies, and migrate:
 
 ```bash
-
-    source venv/bin/activate
-```
-
-## 5) Install Dependencies:
-
-```bash
-
+cd backend
 pip install -r requirements.txt
+py manage.py migrate
 ```
 
-## 6) Run Migrations:
+(Optional) create admin user:
 
 ```bash
+py manage.py createsuperuser
+```
 
+Run backend server:
+
+```bash
+py manage.py runserver 8000
+```
+
+Backend URL:
+
+- `http://127.0.0.1:8000/`
+
+### 3) Frontend setup
+
+In another terminal (from repo root):
+
+```bash
+cd frontend
+npm install
+npm run dev -- --host
+```
+
+For Google OAuth in local/dev, set:
+
+- `frontend/.env` with `VITE_GOOGLE_CLIENT_ID=...`
+- `backend/.env` (or platform env vars) with `GOOGLE_CLIENT_ID=...`
+
+You can keep multiple backend client IDs comma-separated in `GOOGLE_CLIENT_ID`.
+
+Frontend URL:
+
+- `http://localhost:5173/`
+
+Build frontend:
+
+```bash
+npm run build
+```
+
+Preview production build:
+
+```bash
+npm run preview
+```
+
+## Configuration Notes
+
+- Vite dev server proxies `/api` to `http://127.0.0.1:8000`.
+- Frontend can target deployed backend using `VITE_API_BASE_URL`.
+- CORS is enabled for:
+  - `http://localhost:5173`
+  - `http://127.0.0.1:5173`
+- CSRF trusted origins include those same frontend origins for authenticated POST/PUT/PATCH/DELETE requests.
+
+## Production Deployment
+
+Recommended setup:
+
+- Frontend: Vercel
+- Backend: Render (Web Service + PostgreSQL)
+
+### Why Render for backend?
+
+- Very straightforward Django + Gunicorn deployment
+- Managed PostgreSQL available in same platform
+- Easy environment variable management
+
+### 1) Deploy backend on Render
+
+Create a new Web Service pointing to this repository.
+
+Set Render Root Directory to `backend`.
+
+Render settings:
+
+- Build Command: `pip install -r requirements.txt && python manage.py collectstatic --noinput`
+- Start Command: `gunicorn FarmManagementSystem.wsgi --log-file -`
+
+Set these environment variables on Render:
+
+- `DJANGO_SECRET_KEY` = a strong random value
+- `DJANGO_DEBUG` = `False`
+- `DJANGO_ALLOWED_HOSTS` = `your-backend.onrender.com`
+- `CORS_ALLOWED_ORIGINS` = `https://your-frontend.vercel.app`
+- `CSRF_TRUSTED_ORIGINS` = `https://your-frontend.vercel.app`
+- `DATABASE_URL` = Render PostgreSQL connection string
+
+Then run migrations once (Render shell/console):
+
+```bash
 python manage.py migrate
 ```
 
-## 7) Create Superuser:
+### 2) Deploy frontend on Vercel
+
+Import `frontend/` as the project root in Vercel.
+
+Set environment variable in Vercel:
+
+- `VITE_API_BASE_URL` = `https://your-backend.onrender.com`
+
+Build settings:
+
+- Install: `npm install`
+- Build: `npm run build`
+- Output: `dist`
+
+`frontend/vercel.json` is already included for SPA routing.
+
+### 3) Final cross-origin checklist
+
+- Backend CORS origin matches your Vercel domain exactly.
+- Backend CSRF trusted origin matches your Vercel domain exactly.
+- Frontend `VITE_API_BASE_URL` points to backend `https` URL.
+
+## Useful Commands
+
+Run backend tests:
 
 ```bash
-
-python manage.py createsuperuser
+cd backend
+py manage.py test
 ```
 
-## 8) Run the Development Server:
+Collect static files:
 
 ```bash
-
-    python manage.py runserver
+cd backend
+py manage.py collectstatic
 ```
 
-  ## 9) Access the Application:
-   Open your web browser and go to `http://localhost:8000/` 
-  to access the Farm Management System.
+## Current Gaps / Next Improvements
 
-# Usage
+- Automated tests for API and frontend flows
+- Role-based permissions (admin/manager/staff)
+- Data export (CSV/PDF reports)
+- Password reset/change flows
+- Audit logs and notifications
 
-  Login:
-        Access the admin dashboard by going to `http://localhost:8000/admin/`.
-        Log in using the superuser credentials created during the installation.
+## Author
 
-  Explore Features:
-        Navigate through the Crop Management, Employees, Livestock, Machinery, Egg Production, and Milk Production sections to manage your farm operations.
+Developed by Sparsh Yadav.
 
-  Record Data:
-        Add crop operations, expenses, sales, employee details, livestock information, machinery records, egg production, and milk production data using the user-friendly forms provided.
+---
 
-  Visualize Data:
-        Utilize the graphical interfaces in the  Milk Production sections to analyze and visualize production trends.
-
-# Configuration
-
-The Farm Management System can be configured based on specific farm requirements. Adjust settings, customize forms, and modify templates to tailor the system to your farm's unique needs.
-
-# Contributing
-
-We welcome contributions to enhance and improve the Farm Management System. To contribute, follow these steps:
-
-  1) Fork the repository.
-  2) Create a new branch for your feature or bug fix.
-  3) Make your changes and commit them with descriptive commit messages.
-  4) Push your changes to your fork.
-  5) Submit a pull request, detailing the changes you made.
-
-For more details, check the Contribution Guidelines.
-# License
-
-This project is licensed under the [MIT License](MIT_license).
-
-# Contact
-
-For any inquiries or assistance, feel free to contact the developer:
-
-**Developer:** Sparsh Yadav
-**Email:** sparshyadav0816@gmail.com
-**GitHub:** [sparshydv](https://github.com/sparshydv)
-
-I appreciate your feedback and suggestions for improving the Farm Management System!
-
-Thank you for choosing the Farm Management System. Happy farming!
-
-
-
-
-
-
+If you use this project in production, update security settings (secret key, debug, allowed hosts, HTTPS, and cookie settings) before deployment.
