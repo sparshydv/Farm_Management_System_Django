@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import dashboardImage from '../../../inspiration_images/dashboard.png';
 import betweenImage from '../../../inspiration_images/between.png';
+import mainImage from '../../../inspiration_images/main.png';
 
 const navLinks = [
   { to: '#home', label: 'Home', icon: Home },
@@ -73,6 +74,7 @@ const benefits = [
 
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [heroMainFailed, setHeroMainFailed] = useState(false);
 
   const scrollTo = (id: string) => {
     const el = document.querySelector(id);
@@ -196,23 +198,22 @@ export default function LandingPage() {
           {/* Hero Image / Illustration */}
           <div className="relative">
             <div className="bg-gradient-to-br from-brand-teal/10 to-brand-teal/5 rounded-3xl p-8 lg:p-12">
-              <img
-                src="/inspiration_images/main.png"
-                alt="Farm Management Dashboard"
-                className="w-full rounded-2xl shadow-2xl"
-                onError={(e) => {
-                  // Fallback if image doesn't load
-                  (e.target as HTMLImageElement).style.display = 'none';
-                }}
-              />
-              {/* Fallback illustration */}
-              <div className="aspect-video bg-white rounded-2xl shadow-2xl overflow-hidden">
+              {!heroMainFailed ? (
                 <img
-                  src={dashboardImage}
-                  alt="Dashboard Preview"
-                  className="w-full h-full object-cover"
+                  src={mainImage}
+                  alt="Farm Management Dashboard"
+                  className="w-full rounded-2xl shadow-2xl"
+                  onError={() => setHeroMainFailed(true)}
                 />
-              </div>
+              ) : (
+                <div className="aspect-video bg-white rounded-2xl shadow-2xl overflow-hidden">
+                  <img
+                    src={dashboardImage}
+                    alt="Dashboard Preview"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
             </div>
             {/* Floating stats */}
             <div className="absolute -left-4 top-1/4 bg-white rounded-2xl shadow-xl p-4 hidden lg:block">
