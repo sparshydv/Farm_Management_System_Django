@@ -270,7 +270,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="rounded-3xl overflow-hidden shadow-xl">
             <img
-              src={betweenImage}
+              src={dashboardImage}
               alt="Farm management overview"
               className="w-full h-auto object-cover"
             />
