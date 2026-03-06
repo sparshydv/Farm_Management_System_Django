@@ -2,6 +2,7 @@ const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, ''
 const BASE = API_BASE_URL ? `${API_BASE_URL}/api` : '/api';
 
 let csrfTokenCache = '';
+let warmupInFlight: Promise<void> | null = null;
 
 async function ensureCsrfToken(forceRefresh = false): Promise<string> {
   if (forceRefresh) csrfTokenCache = '';
@@ -67,6 +68,21 @@ async function request<T>(url: string, options?: RequestInit): Promise<T> {
 
 // ─── Auth ────────────────────────────
 export const auth = {
+  warmup: async () => {
+    if (warmupInFlight) return warmupInFlight;
+
+    warmupInFlight = fetch(`${BASE}/auth/csrf/`, {
+      credentials: 'include',
+      keepalive: true,
+    })
+      .then(() => undefined)
+      .catch(() => undefined)
+      .finally(() => {
+        warmupInFlight = null;
+      });
+
+    return warmupInFlight;
+  },
   login: async (data: { username: string; password: string }) => {
     const response = await request(`${BASE}/auth/login/`, { method: 'POST', body: JSON.stringify(data) });
     csrfTokenCache = '';

@@ -31,37 +31,43 @@ function GuestRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function AuthenticatedApp() {
+  return (
+    <AuthProvider>
+      <Routes>
+        {/* Auth routes */}
+        <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
+        <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
+
+        {/* Protected routes inside AppLayout */}
+        <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/employees" element={<EmployeesPage />} />
+          <Route path="/crops" element={<CropsPage />} />
+          <Route path="/crops/:id" element={<CropDetailPage />} />
+          <Route path="/livestock" element={<LivestockPage />} />
+          <Route path="/livestock/:id" element={<LivestockDetailPage />} />
+          <Route path="/machinery" element={<MachineryPage />} />
+          <Route path="/machinery/:plate" element={<MachineryDetailPage />} />
+          <Route path="/milk-production" element={<MilkProductionPage />} />
+          <Route path="/egg-production" element={<EggProductionPage />} />
+          <Route path="/help" element={<HelpPage />} />
+        </Route>
+
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
+    </AuthProvider>
+  );
+}
+
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <Routes>
-          {/* Landing page for guests */}
-          <Route path="/" element={<GuestRoute><LandingPage /></GuestRoute>} />
-
-          {/* Auth routes */}
-          <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
-          <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
-
-          {/* Protected routes inside AppLayout */}
-          <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
-            <Route path="dashboard" element={<DashboardPage />} />
-            <Route path="employees" element={<EmployeesPage />} />
-            <Route path="crops" element={<CropsPage />} />
-            <Route path="crops/:id" element={<CropDetailPage />} />
-            <Route path="livestock" element={<LivestockPage />} />
-            <Route path="livestock/:id" element={<LivestockDetailPage />} />
-            <Route path="machinery" element={<MachineryPage />} />
-            <Route path="machinery/:plate" element={<MachineryDetailPage />} />
-            <Route path="milk-production" element={<MilkProductionPage />} />
-            <Route path="egg-production" element={<EggProductionPage />} />
-            <Route path="help" element={<HelpPage />} />
-          </Route>
-
-          {/* Fallback */}
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
-      </AuthProvider>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/*" element={<AuthenticatedApp />} />
+      </Routes>
     </BrowserRouter>
   );
 }

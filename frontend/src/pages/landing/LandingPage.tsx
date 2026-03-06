@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { auth } from '../../services/api';
 import {
   Sprout, Home, Info, Layers, Mail, Menu, X,
   Users, Wheat, Tractor, PawPrint, Milk, Egg,
@@ -75,6 +76,15 @@ const benefits = [
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [heroMainFailed, setHeroMainFailed] = useState(false);
+
+  useEffect(() => {
+    // Trigger backend wake-up shortly after landing paint without blocking UI.
+    const timerId = window.setTimeout(() => {
+      void auth.warmup();
+    }, 1500);
+
+    return () => window.clearTimeout(timerId);
+  }, []);
 
   const scrollTo = (id: string) => {
     const el = document.querySelector(id);
