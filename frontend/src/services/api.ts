@@ -71,7 +71,7 @@ export const auth = {
   warmup: async () => {
     if (warmupInFlight) return warmupInFlight;
 
-    warmupInFlight = fetch(`${BASE}/auth/csrf/`, {
+    warmupInFlight = fetch(`${BASE}/healthz/`, {
       credentials: 'include',
       keepalive: true,
     })

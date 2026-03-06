@@ -1,15 +1,24 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { Sprout, Eye, EyeOff } from 'lucide-react';
 
+declare global {
+  interface Window {
+    google?: any;
+  }
+}
+
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
+
 export default function RegisterPage() {
-  const { user, register } = useAuth();
+  const { user, register, googleLogin } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({ username: '', email: '', password: '', password2: '' });
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const googleBtnRef = useRef<HTMLDivElement | null>(null);
 
   if (user) return <Navigate to="/dashboard" replace />;
 
@@ -30,6 +39,50 @@ export default function RegisterPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!GOOGLE_CLIENT_ID || !googleBtnRef.current) return;
+
+    const renderGoogleButton = () => {
+      if (!window.google || !googleBtnRef.current) return;
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: async (response: { credential?: string }) => {
+          if (!response.credential) return;
+          setError('');
+          setLoading(true);
+          try {
+            await googleLogin(response.credential);
+          } catch (err: any) {
+            setError(err?.detail || 'Google sign-in failed. Please try again.');
+          } finally {
+            setLoading(false);
+          }
+        },
+      });
+
+      googleBtnRef.current.innerHTML = '';
+      window.google.accounts.id.renderButton(googleBtnRef.current, {
+        type: 'standard',
+        theme: 'outline',
+        size: 'large',
+        width: 380,
+        text: 'signup_with',
+      });
+    };
+
+    if (window.google) {
+      renderGoogleButton();
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = renderGoogleButton;
+    document.head.appendChild(script);
+  }, [googleLogin]);
 
   return (
     <div className="min-h-screen flex">
@@ -66,6 +119,17 @@ export default function RegisterPage() {
             <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm">
               {error}
             </div>
+          )}
+
+          {GOOGLE_CLIENT_ID && (
+            <>
+              <div ref={googleBtnRef} className="w-full flex justify-center mb-6" />
+              <div className="mb-6 flex items-center gap-3">
+                <div className="h-px bg-gray-200 flex-1" />
+                <span className="text-xs uppercase tracking-wide text-gray-400">or</span>
+                <div className="h-px bg-gray-200 flex-1" />
+              </div>
+            </>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
